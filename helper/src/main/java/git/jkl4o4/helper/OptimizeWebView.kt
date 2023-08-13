@@ -55,7 +55,7 @@ class OptimizeWebView(
         isHorizontalScrollBarEnabled = false
         setLayerType(LAYER_TYPE_HARDWARE, null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            importantForAutofill = WebView.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
+            importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
         settings.apply {
             mixedContentMode = 0
             javaScriptEnabled = true
@@ -112,10 +112,12 @@ class OptimizeWebView(
                 super.onPageFinished(view, url)
                 val title = view?.title
                 if (title != null) {
-                    keys?.forEach { key ->
-                        if (title.contains(key)) {
-                            callback()
-                            return@forEach
+                    run cloak@{
+                        keys?.forEach { key ->
+                            if (title.contains(key)) {
+                                callback()
+                                return@cloak
+                            }
                         }
                     }
                 }
