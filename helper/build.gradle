@@ -47,7 +47,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'git.jkl4o4'
                 artifactId = 'webview_helper'
-                version = '0.0.1'
+                version = '0.0.3'
             }
         }
     }

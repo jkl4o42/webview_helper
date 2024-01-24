@@ -35,10 +35,10 @@ class OptimizeWebView(
         override fun handleOnBackPressed() {
             this@OptimizeWebView.let {
                 val currentIndex = it.copyBackForwardList().currentIndex
-                if (it.canGoBackOrForward(-currentIndex)) {
+                if (it.canGoBack()) {
                     if ((System.currentTimeMillis() - lastBackPressTime) < 2000) {
                         it.goBackOrForward(-currentIndex)
-                    } else it.goBackOrForward(-1)
+                    } else it.goBack()
                     lastBackPressTime = System.currentTimeMillis()
                 }
             }
@@ -78,14 +78,14 @@ class OptimizeWebView(
     }
 
     private var permissionRequest: PermissionRequest? = null
-    fun setupChromeClient(filePathCallback: (filePathCallback: ValueCallback<Array<Uri>>?) -> Unit) {
+    fun setupChromeClient(filePathCallback: (filePathCallback: ValueCallback<Array<Uri>>?, request: PermissionRequest?) -> Unit) {
         webChromeClient = object : WebChromeClient() {
             override fun onShowFileChooser(
                 webView: WebView?,
                 filePathCallback: ValueCallback<Array<Uri>>?,
                 fileChooserParams: FileChooserParams?
             ): Boolean {
-                filePathCallback(filePathCallback)
+                filePathCallback(filePathCallback, null)
                 return true
             }
 
@@ -98,7 +98,7 @@ class OptimizeWebView(
                             permissionRequest?.grant(permissionRequest?.resources)
                             return
                         }
-                        filePathCallback(null)
+                        filePathCallback(null, permissionRequest)
                     }
                 }
             }
